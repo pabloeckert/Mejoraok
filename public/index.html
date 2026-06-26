@@ -5,190 +5,242 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mejora Continua — Comunidad de Negocios</title>
   <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-  <link rel="manifest" href="favicon/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    @font-face {
-      font-family: 'LeagueSpartan';
-      src: url('LeagueSpartan-Bold.ttf') format('truetype');
-      font-weight: 700;
-    }
-    @font-face {
-      font-family: 'BwModelica';
-      src: url('BwModelica-Medium.otf') format('opentype');
-      font-weight: 500;
-    }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'BwModelica', 'Segoe UI', sans-serif;
-      background: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-    .card {
-      display: grid;
-      grid-template-columns: 420px 1fr;
-      max-width: 920px;
-      width: 100%;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 12px 48px rgba(2,6,89,0.10);
-      min-height: 600px;
-    }
-    .card-img {
-      overflow: hidden;
-      background: #f0f0f0;
-      position: relative;
-    }
-    .card-img img {
-      width: 100%;
+
+    html, body {
       height: 100%;
-      object-fit: cover;
-      object-position: 20% center;
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
-    .card-body {
+      font-family: 'League Spartan', sans-serif;
       background: #ffffff;
+      color: #0D0D0D;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      min-height: 100vh;
+    }
+
+    /* PANEL IZQUIERDO — azul marino fijo */
+    .panel-left {
+      background: #020659;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
       padding: 48px 44px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .panel-left .logo img {
+      height: 52px;
+      width: auto;
+    }
+
+    .panel-left .frase {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      position: relative;
-      z-index: 2;
+      padding: 40px 0;
     }
-    .logo-wrap {
-      margin-bottom: 32px;
+
+    .panel-left .frase h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 20px;
     }
-    .logo-wrap img {
-      height: 52px;
-      width: auto;
-      max-width: 220px;
+
+    .panel-left .frase h2 span {
+      color: #F2BB16;
     }
-    .logo-sub {
-      font-family: 'BwModelica', sans-serif;
-      font-size: 10px;
-      letter-spacing: 2.5px;
+
+    .panel-left .frase p {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .panel-left .bottom {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: #999;
-      margin-top: 8px;
-      display: block;
     }
+
+    /* PANEL DERECHO — contenido blanco */
+    .panel-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 64px 56px;
+      min-height: 100vh;
+    }
+
     .badge {
       display: inline-block;
       background: #F2F2F2;
-      border: 1px solid #CCCCCC;
+      border: 1px solid #E0E0E0;
       border-radius: 100px;
-      padding: 5px 16px;
+      padding: 6px 16px;
       font-size: 11px;
-      color: #888888;
+      font-weight: 600;
+      color: #888;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 24px;
-      align-self: flex-start;
+      margin-bottom: 32px;
     }
+
     h1 {
-      font-family: 'LeagueSpartan', sans-serif;
-      font-weight: 700;
-      font-size: clamp(32px, 4vw, 48px);
+      font-size: clamp(40px, 5vw, 60px);
+      font-weight: 800;
       color: #020659;
-      line-height: 1.05;
-      margin-bottom: 16px;
+      line-height: 1.0;
+      margin-bottom: 24px;
     }
-    h1 span { color: #020659; }
+
     .tagline {
-      font-family: 'LeagueSpartan', sans-serif;
-      font-size: 15px;
-      color: #656565;
-      font-weight: 400;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1C4D8C;
+      line-height: 1.5;
       margin-bottom: 16px;
-      line-height: 1.4;
+      max-width: 400px;
     }
+
     .subtext {
-      font-size: 14px;
+      font-size: 15px;
+      font-weight: 400;
       color: #656565;
       line-height: 1.7;
-      margin-bottom: 32px;
-      max-width: 360px;
+      margin-bottom: 40px;
+      max-width: 400px;
     }
+
     .divider {
       width: 40px;
       height: 3px;
-      background: #E0E0E0;
+      background: #F2BB16;
       border-radius: 2px;
-      margin-bottom: 32px;
+      margin-bottom: 40px;
     }
+
     .cta {
       display: inline-block;
       background: #F2BB16;
       color: #0D0D0D;
-      font-family: 'LeagueSpartan', sans-serif;
+      font-family: 'League Spartan', sans-serif;
       font-weight: 700;
-      font-size: 15px;
-      padding: 14px 32px;
+      font-size: 16px;
+      padding: 16px 40px;
       border-radius: 8px;
       text-decoration: none;
-      margin-bottom: 10px;
-      align-self: flex-start;
-      transition: opacity 0.2s, transform 0.2s;
+      margin-bottom: 12px;
+      transition: opacity 0.2s, transform 0.15s;
     }
-    .cta:hover { opacity: 0.88; transform: translateY(-1px); }
+    .cta:hover { opacity: 0.88; transform: translateY(-2px); }
+
     .cta-note {
       font-size: 12px;
+      font-weight: 400;
       color: #bbb;
-      margin-bottom: 32px;
-    }
-    .contact {
-      font-size: 13px;
-      color: #656565;
-      line-height: 2.2;
-      border-top: 1px solid #F0F0F0;
-      padding-top: 24px;
-    }
-    .contact strong {
+      margin-bottom: 48px;
       display: block;
-      font-family: 'LeagueSpartan', sans-serif;
-      font-size: 15px;
-      color: #020659;
-      margin-bottom: 2px;
     }
-    .contact a { color: #1C4D8C; text-decoration: none; font-weight: 500; }
-    .contact a:hover { text-decoration: underline; }
-    @media (max-width: 640px) {
-      body { padding: 0; align-items: flex-start; }
-      .card { flex-direction: column; border-radius: 0; box-shadow: none; min-height: 100vh; }
-      .card-img { width: 100%; height: 280px; }
-      .card-body { width: 100%; padding: 32px 24px 48px; }
-      .cta { align-self: stretch; text-align: center; }
+
+    .contact {
+      border-top: 1px solid #F0F0F0;
+      padding-top: 32px;
+      width: 100%;
+      max-width: 400px;
+    }
+    .contact .nombre {
+      font-size: 16px;
+      font-weight: 700;
+      color: #020659;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .contact .cargo {
+      font-size: 13px;
+      font-weight: 400;
+      color: #888;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .contact-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1C4D8C;
+      text-decoration: none;
+    }
+    .contact-links a:hover { text-decoration: underline; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+
+      .panel-left {
+        position: relative;
+        height: auto;
+        min-height: 220px;
+        padding: 36px 28px;
+      }
+      .panel-left .frase h2 { font-size: 22px; }
+      .panel-left .frase p { display: none; }
+      .panel-left .bottom { display: none; }
+
+      .panel-right {
+        padding: 40px 28px 60px;
+      }
+
+      h1 { font-size: 38px; }
     }
   </style>
 </head>
 <body>
-<div class="card">
 
-  <div class="card-img">
-    <img src="ImagenDestacada.png" alt="Mejora Continua">
+<div class="layout">
+
+  <!-- PANEL IZQUIERDO -->
+  <div class="panel-left">
+    <div class="logo">
+      <img src="logo-blanco.png" alt="Mejora Continua">
+    </div>
+
+    <div class="frase">
+      <h2>Claridad para<br>decidir. Método<br>para <span>crecer.</span></h2>
+      <p>Desde 2013 acompañamos a líderes, equipos y organizaciones a transformar su gestión en resultados concretos.</p>
+    </div>
+
+    <div class="bottom">Posadas · Misiones · Argentina</div>
   </div>
 
-  <div class="card-body">
-
-    <div class="logo-wrap">
-      <img src="MC1A.png" alt="Mejora Continua">
-      <span class="logo-sub">Comunidad de Negocios · Posadas, Misiones</span>
-    </div>
+  <!-- PANEL DERECHO -->
+  <div class="panel-right">
 
     <span class="badge">Nuevo sitio en camino</span>
 
-    <h1>VOS QUERÉS<br><span>RESULTADOS.</span></h1>
+    <h1>VOS<br>QUERÉS<br>RESULTADOS.</h1>
 
     <p class="tagline">Mejora Continua te acompaña a vos como líder, a tus equipos y a tu organización.</p>
 
-    <p class="subtext">Las ideas, los procesos y los sueños solo valen si se transforman en acciones con impacto. Estamos construyendo algo nuevo para vos. Mientras tanto, escribinos.</p>
+    <p class="subtext">Las ideas, los procesos y los sueños solo valen si se transforman en acciones con impacto. Mientras construimos algo nuevo, escribinos hoy.</p>
 
     <div class="divider"></div>
 
@@ -196,14 +248,17 @@
     <span class="cta-note">Sin costo. Sin compromiso.</span>
 
     <div class="contact">
-      <strong>Sindy Geisert</strong>
-      Directora Ejecutiva<br>
-      <a href="mailto:sindygeisert@mejoraok.com">sindygeisert@mejoraok.com</a><br>
-      <a href="https://wa.me/5493764358152">+54 9 376 435-8152</a><br>
-      <a href="https://instagram.com/mejoraok" target="_blank">@mejoraok</a>
+      <span class="nombre">Sindy Geisert</span>
+      <span class="cargo">Directora Ejecutiva</span>
+      <div class="contact-links">
+        <a href="mailto:sindygeisert@mejoraok.com">sindygeisert@mejoraok.com</a>
+        <a href="https://wa.me/5493764358152">+54 9 376 435-8152</a>
+        <a href="https://instagram.com/mejoraok" target="_blank">@mejoraok en Instagram</a>
+      </div>
     </div>
 
   </div>
 </div>
+
 </body>
 </html>
