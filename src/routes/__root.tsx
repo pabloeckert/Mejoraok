@@ -8,15 +8,17 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Mejora Continua — Comunidad de Negocios" },
-      { name: "description", content: "Acompañamos a líderes, equipos y organizaciones de Posadas, Misiones a transformar ideas en acciones con impacto." },
+      { title: "Mejora Continua" },
+      { name: "description", content: "Vos queres Resultados" },
       { name: "author", content: "Mejora Continua" },
-      { property: "og:title", content: "Mejora Continua — Comunidad de Negocios" },
-      { property: "og:description", content: "Acompañamos a líderes, equipos y organizaciones. Nuevo sitio en camino." },
+      { property: "og:title", content: "Mejora Continua" },
+      { property: "og:description", content: "Vos queres Resultados" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Mejora Continua — Comunidad de Negocios" },
-      { name: "twitter:description", content: "Acompañamos a líderes, equipos y organizaciones." },
+      { name: "twitter:title", content: "Mejora Continua" },
+      { name: "twitter:description", content: "Vos queres Resultados" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/aUl6mLF6q2haChR8Jq8TYohiJMf1/social-images/social-1782481521958-ImagenDestacada.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/aUl6mLF6q2haChR8Jq8TYohiJMf1/social-images/social-1782481521958-ImagenDestacada.webp" },
     ],
     links: [
       {
