@@ -9,182 +9,166 @@
   <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body {
-      height: 100%;
-      font-family: 'League Spartan', sans-serif;
-      background: #ffffff;
-      color: #0D0D0D;
-    }
+    html, body { height: 100%; font-family: 'League Spartan', sans-serif; background: #ffffff; }
 
     .layout {
       display: grid;
-      grid-template-columns: 42% 58%;
+      grid-template-columns: 48% 52%;
       min-height: 100vh;
     }
 
-    /* PANEL IZQUIERDO — azul marino fijo */
-    .panel-left {
-      background: #020659;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: space-between;
-      padding: 48px 44px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
+    /* COLUMNA IZQUIERDA — imagen a sangre completa */
+    .col-img {
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+    .col-img img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
     }
 
-    .panel-left .logo img {
-      height: 52px;
+    /* COLUMNA DERECHA — contenido */
+    .col-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px 52px;
+      background: #ffffff;
+      min-height: 100vh;
+    }
+
+    /* LOGO */
+    .logo {
+      margin-bottom: 48px;
+    }
+    .logo img {
+      height: 56px;
       width: auto;
     }
-
-    .panel-left .frase {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 40px 0;
-    }
-
-    .panel-left .frase h2 {
-      font-size: 32px;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.15;
-      margin-bottom: 20px;
-    }
-
-    .panel-left .frase h2 span {
-      color: #F2BB16;
-    }
-
-    .panel-left .frase p {
-      font-size: 15px;
-      font-weight: 300;
-      color: rgba(255,255,255,0.65);
-      line-height: 1.7;
-      max-width: 280px;
-    }
-
-    .panel-left .bottom {
-      font-size: 11px;
+    .logo-sub {
+      display: block;
+      font-size: 10px;
       font-weight: 400;
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 1.5px;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
+      color: #999;
+      margin-top: 10px;
     }
 
-    /* PANEL DERECHO — contenido blanco */
-    .panel-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 64px 56px;
-      min-height: 100vh;
-    }
-
+    /* BADGE */
     .badge {
       display: inline-block;
       background: #F2F2F2;
       border: 1px solid #E0E0E0;
       border-radius: 100px;
-      padding: 6px 16px;
+      padding: 6px 18px;
       font-size: 11px;
       font-weight: 600;
       color: #888;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
+    /* HEADLINE */
     h1 {
-      font-size: clamp(40px, 5vw, 60px);
+      font-size: clamp(42px, 5vw, 62px);
       font-weight: 800;
       color: #020659;
       line-height: 1.0;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
+    /* TAGLINE */
     .tagline {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #1C4D8C;
       line-height: 1.5;
-      margin-bottom: 16px;
-      max-width: 400px;
+      margin-bottom: 14px;
+      max-width: 380px;
     }
 
+    /* SUBTEXT */
     .subtext {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 400;
       color: #656565;
-      line-height: 1.7;
-      margin-bottom: 40px;
-      max-width: 400px;
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 380px;
     }
 
+    /* DIVIDER */
     .divider {
       width: 40px;
       height: 3px;
       background: #F2BB16;
       border-radius: 2px;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
 
+    /* BOTÓN — azul marino, sin amarillo */
     .cta {
       display: inline-block;
-      background: #F2BB16;
-      color: #0D0D0D;
+      background: #020659;
+      color: #ffffff;
       font-family: 'League Spartan', sans-serif;
       font-weight: 700;
-      font-size: 16px;
-      padding: 16px 40px;
+      font-size: 15px;
+      padding: 15px 40px;
       border-radius: 8px;
       text-decoration: none;
-      margin-bottom: 12px;
-      transition: opacity 0.2s, transform 0.15s;
+      align-self: flex-start;
+      margin-bottom: 10px;
+      transition: background 0.2s, transform 0.15s;
     }
-    .cta:hover { opacity: 0.88; transform: translateY(-2px); }
+    .cta:hover {
+      background: #1C4D8C;
+      transform: translateY(-2px);
+    }
 
     .cta-note {
+      display: block;
       font-size: 12px;
       font-weight: 400;
       color: #bbb;
-      margin-bottom: 48px;
-      display: block;
+      margin-bottom: 44px;
     }
 
+    /* CONTACTO */
     .contact {
       border-top: 1px solid #F0F0F0;
-      padding-top: 32px;
-      width: 100%;
-      max-width: 400px;
+      padding-top: 28px;
+      max-width: 380px;
     }
     .contact .nombre {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       color: #020659;
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
     .contact .cargo {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 400;
-      color: #888;
+      color: #999;
       display: block;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     .contact-links {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .contact-links a {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: #1C4D8C;
       text-decoration: none;
@@ -194,22 +178,17 @@
     /* MOBILE */
     @media (max-width: 768px) {
       .layout { grid-template-columns: 1fr; }
-
-      .panel-left {
+      .col-img {
+        min-height: 320px;
         position: relative;
-        height: auto;
-        min-height: 220px;
-        padding: 36px 28px;
       }
-      .panel-left .frase h2 { font-size: 22px; }
-      .panel-left .frase p { display: none; }
-      .panel-left .bottom { display: none; }
-
-      .panel-right {
-        padding: 40px 28px 60px;
+      .col-img img { position: absolute; }
+      .col-content {
+        padding: 40px 28px 56px;
+        min-height: auto;
       }
-
-      h1 { font-size: 38px; }
+      h1 { font-size: 40px; }
+      .cta { align-self: stretch; text-align: center; }
     }
   </style>
 </head>
@@ -217,22 +196,18 @@
 
 <div class="layout">
 
-  <!-- PANEL IZQUIERDO -->
-  <div class="panel-left">
-    <div class="logo">
-      <img src="logo-blanco.png" alt="Mejora Continua">
-    </div>
-
-    <div class="frase">
-      <h2>Claridad para<br>decidir. Método<br>para <span>crecer.</span></h2>
-      <p>Desde 2013 acompañamos a líderes, equipos y organizaciones a transformar su gestión en resultados concretos.</p>
-    </div>
-
-    <div class="bottom">Posadas · Misiones · Argentina</div>
+  <!-- IMAGEN IZQUIERDA A SANGRE -->
+  <div class="col-img">
+    <img src="ImagenDestacada.png" alt="Mejora Continua">
   </div>
 
-  <!-- PANEL DERECHO -->
-  <div class="panel-right">
+  <!-- CONTENIDO DERECHO -->
+  <div class="col-content">
+
+    <div class="logo">
+      <img src="MC1A.png" alt="Mejora Continua">
+      <span class="logo-sub">Comunidad de Negocios · Posadas, Misiones</span>
+    </div>
 
     <span class="badge">Nuevo sitio en camino</span>
 
@@ -253,7 +228,7 @@
       <div class="contact-links">
         <a href="mailto:sindygeisert@mejoraok.com">sindygeisert@mejoraok.com</a>
         <a href="https://wa.me/5493764358152">+54 9 376 435-8152</a>
-        <a href="https://instagram.com/mejoraok" target="_blank">@mejoraok en Instagram</a>
+        <a href="https://instagram.com/mejoraok" target="_blank">@mejoraok</a>
       </div>
     </div>
 
