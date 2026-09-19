@@ -21,7 +21,7 @@ const DEFAULT_API_URL = "https://tzatuvxatsduuslxqdtm.supabase.co/functions/v1/c
 const DEFAULT_API_KEY = "aec74a771a7ec402234501ac9ba1d0bb8490a7dc9e6a53a8aeed8e5f6855274a";
 
 export const WHATSAPP_PHONE = "5493764358152";
-export const WHATSAPP_DEFAULT_TEXT = "Hola Pablo, estuve viendo la propuesta en mejoraok.com y quiero revisar mi estructura operativa";
+export const WHATSAPP_DEFAULT_TEXT = "Hola, estuve viendo la propuesta en mejoraok.com y quiero ver si me pueden dar una mano, ¿puede ser?";
 export const WHATSAPP_BASE_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_DEFAULT_TEXT)}`;
 
 function getApiConfig() {
