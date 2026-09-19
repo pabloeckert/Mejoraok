@@ -1,4 +1,10 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import {
+  syncLeadToContactos,
+  trackConversionEvent,
+  WHATSAPP_BASE_URL,
+} from "../services/contactosService";
 
 export const Route = createFileRoute("/")({
   component: ComingSoonPage,
@@ -23,9 +29,53 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-const WHATSAPP = "https://wa.me/5493764358152";
+const DIAGNOSTICO_URL = "https://diagnostico.mejoraok.com";
 
 function ComingSoonPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+
+  const handleOpenModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    trackConversionEvent("formulario", { accion: "abrir_modal" });
+    setShowModal(true);
+  };
+
+  const handleDirectWhatsApp = () => {
+    trackConversionEvent("whatsapp", { cta: "directo_sindy" });
+  };
+
+  const handleDiagnosticoClick = () => {
+    trackConversionEvent("diagnostico", { cta: "landing_banner" });
+  };
+
+  const handleSubmitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email && !telefono) return;
+    setIsSubmitting(true);
+
+    try {
+      await syncLeadToContactos({
+        nombre,
+        email,
+        telefono,
+        cta_tipo: "modal_hablemos_ahora",
+      });
+      setIsSent(true);
+      setTimeout(() => {
+        window.open(WHATSAPP_BASE_URL, "_blank");
+      }, 700);
+    } catch (err) {
+      console.warn("Error enviando lead:", err);
+      window.open(WHATSAPP_BASE_URL, "_blank");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <>
       <style>{`
@@ -176,6 +226,130 @@ function ComingSoonPage() {
           font-weight: 500;
         }
         .mc-contact a:hover { text-decoration: underline; }
+        .mc-cta-group {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 8px;
+        }
+        .mc-btn-secondary {
+          display: inline-block;
+          background: transparent;
+          color: #020659;
+          font-family: 'LeagueSpartan', sans-serif;
+          font-weight: 700;
+          font-size: 14px;
+          padding: 13px 22px;
+          border-radius: 8px;
+          border: 1.5px solid #020659;
+          text-decoration: none;
+          transition: all 0.2s;
+        }
+        .mc-btn-secondary:hover {
+          background: #020659;
+          color: #ffffff;
+        }
+        .mc-modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(2, 6, 89, 0.45);
+          backdrop-filter: blur(4px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+        }
+        .mc-modal-card {
+          background: #ffffff;
+          border-radius: 16px;
+          max-width: 440px;
+          width: 100%;
+          padding: 32px;
+          box-shadow: 0 20px 50px rgba(2, 6, 89, 0.2);
+          position: relative;
+          font-family: 'BwModelica', sans-serif;
+        }
+        .mc-modal-close {
+          position: absolute;
+          top: 16px;
+          right: 18px;
+          background: none;
+          border: none;
+          font-size: 22px;
+          color: #888;
+          cursor: pointer;
+          line-height: 1;
+        }
+        .mc-modal-title {
+          font-family: 'LeagueSpartan', sans-serif;
+          font-size: 24px;
+          font-weight: 700;
+          color: #020659;
+          margin-bottom: 6px;
+        }
+        .mc-modal-desc {
+          font-size: 13px;
+          color: #656565;
+          margin-bottom: 20px;
+          line-height: 1.5;
+        }
+        .mc-form-group {
+          margin-bottom: 14px;
+        }
+        .mc-label {
+          display: block;
+          font-size: 12px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 4px;
+        }
+        .mc-input {
+          width: 100%;
+          padding: 10px 14px;
+          border: 1px solid #D0D5DD;
+          border-radius: 8px;
+          font-size: 14px;
+          outline: none;
+          transition: border-color 0.15s;
+          box-sizing: border-box;
+        }
+        .mc-input:focus {
+          border-color: #020659;
+        }
+        .mc-submit-btn {
+          width: 100%;
+          background: #F2BB16;
+          color: #0D0D0D;
+          border: none;
+          border-radius: 8px;
+          padding: 14px;
+          font-family: 'LeagueSpartan', sans-serif;
+          font-weight: 700;
+          font-size: 15px;
+          cursor: pointer;
+          margin-top: 8px;
+          transition: opacity 0.2s, transform 0.2s;
+        }
+        .mc-submit-btn:hover:not(:disabled) {
+          opacity: 0.9;
+          transform: translateY(-1px);
+        }
+        .mc-submit-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+        .mc-modal-alt {
+          margin-top: 14px;
+          text-align: center;
+          font-size: 12px;
+          color: #888;
+        }
+        .mc-modal-alt a {
+          color: #1C4D8C;
+          text-decoration: underline;
+        }
         @media (max-width: 640px) {
           .mc-root { padding: 0; align-items: flex-start; }
           .mc-card {
@@ -187,6 +361,8 @@ function ComingSoonPage() {
           .mc-img { width: 100%; height: 280px; position: relative; }
           .mc-body { width: 100%; padding: 32px 24px 48px; }
           .mc-cta { align-self: stretch; text-align: center; }
+          .mc-cta-group { flex-direction: column; align-items: stretch; }
+          .mc-btn-secondary { text-align: center; }
         }
       `}</style>
 
@@ -222,18 +398,134 @@ function ComingSoonPage() {
 
             <div className="mc-divider" />
 
-            <a className="mc-cta" href={WHATSAPP}>Hablemos ahora</a>
+            <div className="mc-cta-group">
+              <button
+                type="button"
+                className="mc-cta"
+                onClick={handleOpenModal}
+              >
+                Hablemos ahora
+              </button>
+              <a
+                href={DIAGNOSTICO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mc-btn-secondary"
+                onClick={handleDiagnosticoClick}
+              >
+                ¿Cómo está tu empresa?
+              </a>
+            </div>
             <span className="mc-cta-note">Sin costo. Sin compromiso.</span>
 
             <div className="mc-contact">
               <strong>Sindy Geisert</strong>
               Directora Ejecutiva<br />
               <a href="mailto:sindygeisert@mejoraok.com">sindygeisert@mejoraok.com</a><br />
-              <a href={WHATSAPP}>+54 9 376 435-8152</a><br />
+              <a
+                href={WHATSAPP_BASE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleDirectWhatsApp}
+              >
+                +54 9 376 435-8152
+              </a><br />
               <a href="https://instagram.com/mejoraok" target="_blank" rel="noreferrer">@mejoraok</a>
             </div>
           </div>
         </div>
+
+        {showModal && (
+          <div className="mc-modal-overlay" onClick={() => setShowModal(false)}>
+            <div className="mc-modal-card" onClick={(e) => e.stopPropagation()}>
+              <button
+                type="button"
+                className="mc-modal-close"
+                onClick={() => setShowModal(false)}
+                aria-label="Cerrar"
+              >
+                ×
+              </button>
+              <h2 className="mc-modal-title">Hablemos ahora</h2>
+              <p className="mc-modal-desc">
+                Dejanos tus datos para coordinar una conversación directa con Pablo y nuestro equipo.
+              </p>
+
+              {isSent ? (
+                <div style={{ textAlign: "center", padding: "20px 0" }}>
+                  <p style={{ color: "#2E7D32", fontWeight: "bold", marginBottom: 12 }}>
+                    ¡Datos recibidos con éxito!
+                  </p>
+                  <p style={{ fontSize: 13, color: "#666" }}>
+                    Abriendo WhatsApp para continuar la conversación...
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmitLead}>
+                  <div className="mc-form-group">
+                    <label className="mc-label" htmlFor="mc-nombre">Nombre y Apellido</label>
+                    <input
+                      id="mc-nombre"
+                      type="text"
+                      className="mc-input"
+                      placeholder="Ej. Juan Pérez"
+                      value={nombre}
+                      onChange={(e) => setNombre(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mc-form-group">
+                    <label className="mc-label" htmlFor="mc-email">Correo Electrónico</label>
+                    <input
+                      id="mc-email"
+                      type="email"
+                      className="mc-input"
+                      placeholder="tu@empresa.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="mc-form-group">
+                    <label className="mc-label" htmlFor="mc-telefono">Teléfono / WhatsApp</label>
+                    <input
+                      id="mc-telefono"
+                      type="tel"
+                      className="mc-input"
+                      placeholder="+54 9 376 400-0000"
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="mc-submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Sincronizando..." : "Continuar a WhatsApp →"}
+                  </button>
+
+                  <div className="mc-modal-alt">
+                    <a
+                      href={WHATSAPP_BASE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => {
+                        handleDirectWhatsApp();
+                        setShowModal(false);
+                      }}
+                    >
+                      O saltar directo a WhatsApp sin formulario
+                    </a>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

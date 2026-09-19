@@ -125,6 +125,33 @@
     }
     .cta:hover { background: #1C4D8C; transform: translateY(-2px); }
 
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .cta-secondary {
+      display: inline-block;
+      background: transparent;
+      color: #020659;
+      font-family: 'BwModelica', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      padding: 13px 28px;
+      border-radius: 6px;
+      border: 1.5px solid #020659;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .cta-secondary:hover {
+      background: #020659;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
     .cta-note {
       display: block;
       font-size: 12px;
@@ -197,7 +224,10 @@
 
       <p class="subtext">Las ideas, los procesos y los sueños solo valen si se transforman en acciones con impacto.</p>
 
-      <a class="cta" href="https://wa.me/5493764358152">Hablemos</a>
+      <div class="cta-group">
+        <a class="cta" id="btn-whatsapp" href="https://wa.me/5493764358152?text=Hola%20Pablo%2C%20estuve%20viendo%20la%20propuesta%20en%20mejoraok.com%20y%20quiero%20revisar%20mi%20estructura%20operativa" target="_blank">Hablemos</a>
+        <a class="cta-secondary" id="btn-diagnostico" href="https://diagnostico.mejoraok.com" target="_blank">¿Cómo está tu empresa?</a>
+      </div>
       <span class="cta-note">Sin costo. Sin compromiso.</span>
 
       <div class="contact">
@@ -205,7 +235,7 @@
         <span class="cargo">Directora Ejecutiva</span>
         <div class="contact-links">
           <a href="mailto:sindygeisert@mejoraok.com">sindygeisert@mejoraok.com</a>
-          <a href="https://wa.me/5493764358152">+54 9 376 435-8152</a>
+          <a id="link-whatsapp-footer" href="https://wa.me/5493764358152?text=Hola%20Pablo%2C%20estuve%20viendo%20la%20propuesta%20en%20mejoraok.com%20y%20quiero%20revisar%20mi%20estructura%20operativa" target="_blank">+54 9 376 435-8152</a>
           <a href="https://instagram.com/mejoraok" target="_blank">@mejoraok</a>
         </div>
       </div>
@@ -213,6 +243,59 @@
     </div>
   </div>
 </div>
+
+<script>
+(function() {
+  const CONTACTOS_API_URL = "https://tzatuvxatsduuslxqdtm.supabase.co/functions/v1/contactos-api";
+  const CONTACTOS_API_KEY = "aec74a771a7ec402234501ac9ba1d0bb8490a7dc9e6a53a8aeed8e5f6855274a";
+
+  function trackEvent(name) {
+    try {
+      const key = "mejoraok_event_" + name + "_count";
+      const count = parseInt(localStorage.getItem(key) || "0", 10) + 1;
+      localStorage.setItem(key, count.toString());
+      localStorage.setItem("mejoraok_last_" + name + "_at", new Date().toISOString());
+      console.info("[Mejoraok Conversión] Evento: " + name + " (#" + count + ")");
+    } catch (e) {
+      console.debug("Telemetry error:", e);
+    }
+  }
+
+  const btnWs = document.getElementById("btn-whatsapp");
+  if (btnWs) btnWs.addEventListener("click", function() { trackEvent("whatsapp_cta"); });
+
+  const linkWs = document.getElementById("link-whatsapp-footer");
+  if (linkWs) linkWs.addEventListener("click", function() { trackEvent("whatsapp_footer"); });
+
+  const btnDiag = document.getElementById("btn-diagnostico");
+  if (btnDiag) btnDiag.addEventListener("click", function() { trackEvent("diagnostico"); });
+
+  window.enviarLeadMejoraok = async function(lead) {
+    try {
+      const res = await fetch(CONTACTOS_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Api-Key": CONTACTOS_API_KEY
+        },
+        body: JSON.stringify({
+          source: "mejoraok",
+          email: lead.email || null,
+          nombre: lead.nombre || null,
+          telefono: lead.telefono || null,
+          metadata: { origen_cta: lead.cta_tipo || "landing_html" }
+        })
+      });
+      const data = await res.json();
+      trackEvent("formulario_lead");
+      return data;
+    } catch (err) {
+      console.warn("Fallo envio lead Mejoraok:", err);
+      return { ok: false, error: err.message };
+    }
+  };
+})();
+</script>
 
 </body>
 </html>
