@@ -2,7 +2,7 @@ import type { Habit, HabitLog, HabitFrequency } from "./habits";
 
 async function getSupabase() {
   const { supabase } = await import("@/integrations/supabase/client");
-  return supabase;
+  return supabase as any;
 }
 
 /** Fetch all habits for the current user from the database */

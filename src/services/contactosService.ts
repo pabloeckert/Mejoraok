@@ -24,18 +24,16 @@ export const WHATSAPP_PHONE = "5493764358152";
 export const WHATSAPP_DEFAULT_TEXT = "Hola, estuve viendo la propuesta en mejoraok.com y quiero ver si me pueden dar una mano, ¿puede ser?";
 export const WHATSAPP_BASE_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_DEFAULT_TEXT)}`;
 
-function getApiConfig() {
-  const url =
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_CONTACTOS_API_URL) ||
-    (typeof process !== "undefined" && process.env?.VITE_CONTACTOS_API_URL) ||
-    DEFAULT_API_URL;
+function getApiConfig(): { url: string; key: string } {
+  const envUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_CONTACTOS_API_URL : undefined;
+  const procUrl = typeof process !== "undefined" ? process.env?.VITE_CONTACTOS_API_URL : undefined;
+  const url = (typeof envUrl === "string" && envUrl) || (typeof procUrl === "string" && procUrl) || DEFAULT_API_URL;
 
-  const key =
-    (typeof import.meta !== "undefined" && import.meta.env?.VITE_CONTACTOS_API_KEY) ||
-    (typeof process !== "undefined" && process.env?.VITE_CONTACTOS_API_KEY) ||
-    DEFAULT_API_KEY;
+  const envKey = typeof import.meta !== "undefined" ? import.meta.env?.VITE_CONTACTOS_API_KEY : undefined;
+  const procKey = typeof process !== "undefined" ? process.env?.VITE_CONTACTOS_API_KEY : undefined;
+  const key = (typeof envKey === "string" && envKey) || (typeof procKey === "string" && procKey) || DEFAULT_API_KEY;
 
-  return { url, key };
+  return { url: String(url), key: String(key) };
 }
 
 /**

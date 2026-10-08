@@ -14,15 +14,14 @@ export function useAuth(): AuthState {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Dynamic import to avoid SSR issues with supabase client
     import("@/integrations/supabase/client").then(({ supabase }) => {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
       });
 
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      supabase.auth.getSession().then(({ data: { session } }: any) => {
         setSession(session);
         setUser(session?.user ?? null);
         setIsLoading(false);
