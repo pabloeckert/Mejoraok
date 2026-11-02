@@ -19,19 +19,17 @@ export interface SyncLeadResult {
 
 const DEFAULT_API_URL = "https://tzatuvxatsduuslxqdtm.supabase.co/functions/v1/contactos-api";
 const DEFAULT_API_KEY = "aec74a771a7ec402234501ac9ba1d0bb8490a7dc9e6a53a8aeed8e5f6855274a";
+const DEFAULT_NUCLEO_URL = "http://127.0.0.1:4002/api/prospectos";
 
 export const WHATSAPP_PHONE = "5493764358152";
 export const WHATSAPP_DEFAULT_TEXT = "Hola, estuve viendo la propuesta en mejoraok.com y quiero ver si me pueden dar una mano, ¿puede ser?";
 export const WHATSAPP_BASE_URL = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(WHATSAPP_DEFAULT_TEXT)}`;
 
 function getApiConfig(): { url: string; key: string } {
-  const envUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_CONTACTOS_API_URL : undefined;
-  const procUrl = typeof process !== "undefined" ? process.env?.VITE_CONTACTOS_API_URL : undefined;
-  const url = (typeof envUrl === "string" && envUrl) || (typeof procUrl === "string" && procUrl) || DEFAULT_API_URL;
-
-  const envKey = typeof import.meta !== "undefined" ? import.meta.env?.VITE_CONTACTOS_API_KEY : undefined;
-  const procKey = typeof process !== "undefined" ? process.env?.VITE_CONTACTOS_API_KEY : undefined;
-  const key = (typeof envKey === "string" && envKey) || (typeof procKey === "string" && procKey) || DEFAULT_API_KEY;
+  const metaEnv = (import.meta as any)?.env;
+  const procEnv = typeof process !== "undefined" ? process.env : undefined;
+  const url = metaEnv?.VITE_CONTACTOS_API_URL || procEnv?.VITE_CONTACTOS_API_URL || DEFAULT_API_URL;
+  const key = metaEnv?.VITE_CONTACTOS_API_KEY || procEnv?.VITE_CONTACTOS_API_KEY || DEFAULT_API_KEY;
 
   return { url: String(url), key: String(key) };
 }
@@ -109,6 +107,11 @@ export async function syncLeadToContactos(payload: LeadPayload): Promise<SyncLea
       origen_cta: payload.cta_tipo,
     });
 
+    // Enchufe universal a MejoraNucleo (fail-soft, Fast-Window)
+    syncLeadToNucleo(payload).catch((e) =>
+      console.warn("[Mejoraok -> MejoraNucleo] Fallback silencioso:", e)
+    );
+
     return {
       ok: true,
       persona_id: data.persona_id,
@@ -117,9 +120,72 @@ export async function syncLeadToContactos(payload: LeadPayload): Promise<SyncLea
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.warn("[Mejoraok Contactos] Excepción en envío asíncrono (fail-soft):", message);
+
+    // Fallback directo a MejoraNucleo si contactos-api falla o está caído
+    syncLeadToNucleo(payload).catch((e) =>
+      console.warn("[Mejoraok -> MejoraNucleo Fallback]:", e)
+    );
+
     return {
       ok: false,
       error: message,
     };
+  }
+}
+
+/**
+ * Enchufe canónico directo a MejoraNucleo (Fast-Window timeout con AbortController)
+ */
+export async function syncLeadToNucleo(payload: LeadPayload): Promise<{ ok: boolean; id?: string }> {
+  try {
+    const metaEnv = (import.meta as any)?.env;
+    const procEnv = typeof process !== "undefined" ? process.env : undefined;
+    const nucleoUrl = metaEnv?.VITE_NUCLEO_API_URL || procEnv?.VITE_NUCLEO_API_URL || DEFAULT_NUCLEO_URL;
+
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+    const utmSource = urlParams?.get("utm_source") || "mejoraok_landing";
+    const utmMedium = urlParams?.get("utm_medium") || undefined;
+    const utmCampaign = urlParams?.get("utm_campaign") || undefined;
+    const utmContent = urlParams?.get("utm_content") || undefined;
+    const piezaIdAtribucion = urlParams?.get("pieza_id") || undefined;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const body = {
+      nombre: payload.nombre?.trim() || "Contacto Web Mejoraok",
+      email: payload.email?.trim() || "sin-email@mejoraok.com",
+      telefono: payload.telefono?.trim() || undefined,
+      canalOrigen: "mejoraok_landing",
+      mensaje: `CTA: ${payload.cta_tipo || "cta_principal"}`,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+      utmContent,
+      piezaIdAtribucion,
+    };
+
+    const res = await fetch(nucleoUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn("[Mejoraok -> MejoraNucleo] Servidor respondió con estado:", res.status);
+      return { ok: false };
+    }
+
+    const data = await res.json();
+    return { ok: true, id: data.id };
+  } catch (err) {
+    console.debug("[Mejoraok -> MejoraNucleo] Fail-soft offline:", err);
+    return { ok: false };
   }
 }
