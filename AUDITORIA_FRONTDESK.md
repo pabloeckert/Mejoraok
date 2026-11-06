@@ -46,7 +46,7 @@
 
 | Archivo | Funcionalidad | Integración |
 | :--- | :--- | :--- |
-| `src/routes/login.tsx` | Login / Registro con Email + Password y Google OAuth | `@supabase/supabase-js` + `@lovable.dev/cloud-auth-js` |
+| `src/routes/login.tsx` | Login / Registro con Email + Password y Google OAuth | `@supabase/supabase-js` |
 | `src/routes/app.tsx` | Dashboard del cliente (actualmente habit tracker) | `localStorage` + Supabase (`fetchHabitsFromCloud`) |
 | `src/routes/insights.tsx` | Estadísticas del usuario | Cálculos de rachas locales |
 | `src/routes/settings.tsx` | Preferencias y cierre de sesión | Supabase Auth sign-out |
